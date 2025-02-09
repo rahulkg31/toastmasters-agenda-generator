@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Toastmasters Meeting Agenda</title>
+  <style>
+    /* General body styling */
+    body {
+      width: 95%;
+      margin: 0 auto;
+      padding-top: 10px;
+      font-family: 'Trebuchet MS', 'Lucida Sans', Arial, sans-serif;
+      font-size: 14px;
+      background: linear-gradient(to right, #f3f9ff, #c9e8ff);
+      color: #333;
+      line-height: 1.6;
+    }
+
+    /* Info section styling */
+    .info {
+      margin-bottom: 20px;
+    }
+
+    .infoTitle {
+      font-size: 25px;
+      font-weight: bold;
+      color: rgb(0, 54, 194);
+    }
+
+    /* Table container initially hidden */
+    #tableContainer {
+      display: none;
+    }
+
+    /* Download buttons styling */
+    #imageDownload, #pdfDownload {
+      background-color: red;
+    }
+
+    /* Button styling */
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background: linear-gradient(to right, #1e88e5, #1565c0);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      transition: background 0.3s ease;
+      margin-right: 10px;
+    }
+
+    button:hover {
+      background: #005bb5;
+    }
+
+    /* Textarea styling */
+    textarea {
+      width: 100%;
+      height: 200px;
+      box-sizing: border-box;
+      padding: 10px;
+      margin-bottom: 15px;
+      background-color: #e9f7ff;
+      border: 1px solid #0078d7;
+      border-radius: 5px;
+      color: #333;
+      font-size: 14px;
+    }
+
+    /* Table styling */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #ffffff;
+      border-radius: 5px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+
+    th, td {
+      border: 1px solid #000000;
+      text-align: center;
+      padding: 12px;
+    }
+
+    th {
+      background-color: #0078d7;
+      color: white;
+    }
+
+    tr {
+      background-color: #f3f9ff;
+    }
+
+    /* Header table styling */
+    .header-table td {
+      padding: 10px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .header-title {
+      font-size: 22px;
+      background: #0078d7;
+      color: white;
+    }
+
+    .header-highlight {
+      color: #d9534f;
+    }
+
+    /* Input styling */
+    input {
+      width: 100%;
+      border: 1px solid #0078d7;
+      padding: 6px;
+      box-sizing: border-box;
+      border-radius: 5px;
+    }
+
+    /* Context menu styling */
+    .context-menu {
+      display: none;
+      position: absolute;
+      background-color: white;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+
+    .context-menu li {
+      padding: 10px;
+      cursor: pointer;
+      list-style: none;
+    }
+
+    .context-menu li:hover {
+      background-color: #f0f0f0;
+    }
+
+    /* Card color styling */
+    .green-card {
+      background-color: #90ee90;
+    }
+
+    .yellow-card {
+      background-color: #ffeb3b;
+    }
+
+    .red-card {
+      background-color: #ff6347;
+    }
+
+    .blue-card {
+      background-color: #add8e6;
+    }
+
+    /* Editable div styling */
+    .editable-div {
+      width: 100%;
+      min-height: 300px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 16px;
+      padding: 10px;
+      border: 2px solid #ccc;
+      border-radius: 4px;
+      background-color: #f9f9f9;
+      box-sizing: border-box;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      resize: vertical;
+      margin-bottom: 10px;
+    }
+
+    .editable-div:focus {
+      outline: none;
+      border-color: #5c8eb8;
+    }
+
+    .key {
+      color: #3b5998;
+      font-weight: bold;
+    }
+
+    .category {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+
+  <!-- External Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+</head>
+<body>
+  <!-- Info Section -->
+  <div class="info">
+    <img src="https://raw.githubusercontent.com/rahulkg31/toastmasters-agenda-generator/main/logo.png" height="70" style="float: right;">
+    <div class="infoTitle">Toastmasters Meeting Agenda</div>
+    <div class="infoDescription">Generate an agenda for your Toastmasters meeting.</div>    
+  </div>
+  
+
+  <!-- Editable Div for Meeting Data -->
+  <div id="meetingData" class="editable-div" contenteditable="true">
+    <span class="category">MEETING DETAILS</span>
+    <span class="key">Club Name:</span> MILLENNIUM CITY TOASTMASTERS CLUB
+    <span class="key">Club Address:</span> Division H, Area 3, Club No. 03321031 | Shriram Wonder Years School, Sector 46, Gurgaon
+    <span class="key">Meeting Number:</span> 588
+    <span class="key">Meeting Date:</span> 09-02-2025
+    <span class="key">Meeting Start Time:</span> 10:30 AM
+    <span class="key">Meeting End Time:</span> 12:45 PM
+    <span class="key">Meeting Theme:</span> Speeches, Table Topics & Evaluations
+
+    <span class="category">ROLE PLAYERS DETAILS</span>
+    <span class="key">Sergeant at Arms:</span> TM Open
+    <span class="key">Presiding Officer:</span> TM Open
+    <span class="key">Toastmaster of The Day:</span> TM Open
+    <span class="key">Joke Master:</span> TM Open
+    <span class="key">General Evaluator:</span> TM Open
+    <span class="key">Table Topics Master:</span> TM Open
+    <span class="key">Table Topics Evaluator:</span> TM Open
+    <span class="key">Timer:</span> TM Open
+    <span class="key">Ah Counter:</span> TM Open
+    <span class="key">Grammarian:</span> TM Open
+    <span class="key">Speaker:</span>TM Open, TM Open, TM Open
+    <span class="key">Evaluator:</span>TM Open, TM Open, TM Open
+  </div>
+
+  <!-- Buttons for Generating Agenda and Downloads -->
+  <button onclick="generateAgenda()">Generate Agenda</button>
+  <button id="imageDownload" onclick="downloadHDImage()">Download Image</button>
+  <button id="pdfDownload" onclick="downloadPDF()">Download PDF</button>
+
+  <!-- Context Menus -->
+  <ul id="contextMenuSection" class="context-menu">
+    <li onclick="duplicateSection()">Duplicate Section</li>
+    <li onclick="deleteSection()">Delete Section</li>
+    <li onclick="moveSectionUp()">Move Section Up</li>
+    <li onclick="moveSectionDown()">Move Section Down</li>
+  </ul>
+
+  <ul id="contextMenuRow" class="context-menu">
+    <li onclick="duplicateRow()">Duplicate Row</li>
+    <li onclick="deleteRow()">Delete Row</li>
+  </ul>
+
+  <!-- Table Container -->
+  <div id="tableContainer" style="padding: 20px; background: white;">
+    <table id="agendaTable">
+      <thead>
+        <tr>
+          <td colspan='8' style="background: #276791; color: #ffffff;">
+            <div style="display: flex; align-items: center; width: 100%;">
+              <img src="https://raw.githubusercontent.com/rahulkg31/toastmasters-agenda-generator/main/logo.png" alt="Toastmasters Logo" style="height: 80px;">
+              <span id="clubName" style="font-size: 25px; font-weight: bold; flex-grow: 1; text-align: center; margin-right: 150px;" ondblclick="makeEditable(this)">MILLENNIUM CITY TOASTMASTERS CLUB</span>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td id="clubDetails" colspan='8' style="font-weight: bold; text-align: center; background: #F2DF74;" ondblclick="makeEditable(this)">Division H, Area 3, Club: 03321031 | Shriram Wonder Years School, Sector 46, Gurgaon</td>
+        </tr>
+        <tr>
+          <td id="meetingDetails" colspan='8' style="font-weight: bold; text-align: center; background: #3281a8; color: #ffffff;" ondblclick="makeEditable(this)">Meeting #588 Agenda | Time: 10:30 AM to 12:45 PM | Date: 02-02-2025</td>
+        </tr>
+        <tr>
+          <td id="meetingTheme" colspan='8' style="font-weight: bold; text-align: center; background: #eda98c;" ondblclick="makeEditable(this)">MEETING THEME: How To Write Winning Speech</td>
+        </tr>
+        <tr>
+          <td colspan='8' style="font-weight: bold; text-align: center; background: #F2DF74;" ondblclick="makeEditable(this)">ALL ROLE PLAYERS ARE REQUESTED TO ARRIVE AT THE VENUE 15 MINUTES EARLY.</td>
+        </tr>
+        <tr data-section="Header">
+          <th>From</th>
+          <th>To</th>
+          <th>Green Card</th>
+          <th>Yellow Card</th>
+          <th>Red Card</th>
+          <th>Role</th>
+          <th>Event</th>
+          <th>Name</th>
+        </tr>
+      </thead>
+      <tbody id="agendaSections"></tbody>
+    </table>
+  </div>
+
+  <script>
+    // Global Variables
+    let selectedRow = null;
+    let selectedSection = null;
+    let startTime = "10:30";
+
+    // Mapping of sections to tasks
+    let sectionTaskMapping = {
+      "Opening & Introduction": [
+        "Opens the meeting and shares the mission statement.",
+        "Welcomes guests and sets the meeting tone.",
+        "Introduces the agenda and key role players.",
+        "Shares a short and engaging joke.",
+        "Introduces the TAG team and evaluation process.",
+        "Discusses the meeting theme."
+      ],
+      "Prepared Speeches": [
+        "Delivers a structured, engaging, and rehearsed speech to the audience."
+      ],
+      "Table Topics": [
+        "Introduces the rules and guidelines for impromptu speaking session.",
+        "Conducts the impromptu speaking session."
+      ],
+      "Break": ["A brief pause or break to refresh and recharge."],
+      "Evaluations": [
+        "Evaluates Table Topics speeches.",
+        "Provides feedback on the speech.",
+        "Explains rules and shared timer report.",
+        "Tracks and reports filler words.",
+        "Introduces 'Word of the Day' and gives language-specific feedback.",
+        "Provides feedback on the meeting."
+      ],
+      "Closing Remarks": [
+        "Handles voting and result announcements.",
+        "Shares announcements and closes the meeting."
+      ]
+    };
+
+    // Mapping of tasks to time allocations
+    let taskTimeMapping = {
+      "Opens the meeting and shares the mission statement.": { "Green Card": 3, "Yellow Card": 4, "Red Card": 5 },
+      "Welcomes guests and sets the meeting tone.": { "Green Card": 3, "Yellow Card": 4, "Red Card": 5 },
+      "Introduces the agenda and key role players.": { "Green Card": 3, "Yellow Card": 4, "Red Card": 5 },
+      "Shares a short and engaging joke.": { "Green Card": 1, "Yellow Card": 1.5, "Red Card": 2 },
+      "Discusses the meeting theme.": { "Green Card": 16, "Yellow Card": 18, "Red Card": 20 },
+      "Introduces the TAG team and evaluation process.": { "Green Card": 3, "Yellow Card": 4, "Red Card": 5 },
+      "Delivers a structured, engaging, and rehearsed speech to the audience.": { "Green Card": 5, "Yellow Card": 6, "Red Card": 7 },
+      "Introduces the rules and guidelines for impromptu speaking session.": { "Green Card": 1, "Yellow Card": 1.5, "Red Card": 2 },
+      "Conducts the impromptu speaking session.": { "Green Card": 16, "Yellow Card": 18, "Red Card": 20 },
+      "A brief pause or break to refresh and recharge.": { "Red Card": 5 },
+      "Evaluates Table Topics speeches.": { "Green Card": 3, "Yellow Card": 4, "Red Card": 5 },
+      "Provides feedback on the speech.": { "Green Card": 2, "Yellow Card": 2.5, "Red Card": 3 },
+      "Explains rules and shared timer report.": { "Green Card": 2, "Yellow Card": 2.5, "Red Card": 3 },
+      "Tracks and reports filler words.": { "Green Card": 2, "Yellow Card": 2.5, "Red Card": 3 },
+      "Introduces 'Word of the Day' and gives language-specific feedback.": { "Green Card": 2, "Yellow Card": 2.5, "Red Card": 3 },
+      "Provides feedback on the meeting.": { "Green Card": 3, "Yellow Card": 4, "Red Card": 5 },
+      "Handles voting and result announcements.": { "Green Card": 2, "Yellow Card": 2.5, "Red Card": 3 },
+      "Shares announcements and closes the meeting.": { "Green Card": 1, "Yellow Card": 1.5, "Red Card": 2 }
+    };
+
+    // Mapping of tasks to role players
+    let taskRolePlayerMapping = {
+      "Opens the meeting and shares the mission statement.": "Sergeant at Arms",
+      "Welcomes guests and sets the meeting tone.": "Presiding Officer",
+      "Introduces the agenda and key role players.": "Toastmaster of The Day",
+      "Shares a short and engaging joke.": "Joke Master",
+      "Discusses the meeting theme.": "Toastmaster of The Day",
+      "Introduces the TAG team and evaluation process.": "General Evaluator",
+      "Delivers a structured, engaging, and rehearsed speech to the audience.": "Speaker",
+      "Introduces the rules and guidelines for impromptu speaking session.": "Table Topics Master",
+      "Conducts the impromptu speaking session.": "Table Topics Master",
+      "Evaluates Table Topics speeches.": "Table Topics Evaluator",
+      "Provides feedback on the speech.": "Evaluator",
+      "Explains rules and shared timer report.": "Timer",
+      "Tracks and reports filler words.": "Ah Counter",
+      "Introduces 'Word of the Day' and gives language-specific feedback.": "Grammarian",
+      "Provides feedback on the meeting.": "General Evaluator",
+      "Handles voting and result announcements.": "Presiding Officer",
+      "Shares announcements and closes the meeting.": "Presiding Officer"
+    };
+
+    // Function to generate the agenda
+    function generateAgenda() {
+      // Extract data from the editable div
+      const data = document.getElementById("meetingData").innerText;
+      const lines = data.split('\n');
+
+      // Initialize variables to store extracted data
+      let clubName = "";
+      let clubAddress = "";
+      let meetingNumber = "";
+      let meetingDate = "";
+      let meetingStartTime = "";
+      let meetingEndTime = "";
+      let meetingTheme = "";
+
+      // Parse each line to extract relevant data
+      lines.forEach(line => {
+        if (line.includes("Club Name:")) {
+          clubName = line.replace("Club Name:", "").trim();
+        } else if (line.includes("Club Address:")) {
+          clubAddress = line.replace("Club Address:", "").trim();
+        } else if (line.includes("Meeting Number:")) {
+          meetingNumber = line.replace("Meeting Number:", "").trim();
+        } else if (line.includes("Meeting Date:")) {
+          meetingDate = line.replace("Meeting Date:", "").trim();
+        } else if (line.includes("Meeting Start Time:")) {
+          meetingStartTime = line.replace("Meeting Start Time:", "").trim();
+        } else if (line.includes("Meeting End Time:")) {
+          meetingEndTime = line.replace("Meeting End Time:", "").trim();
+        } else if (line.includes("Meeting Theme:")) {
+          meetingTheme = line.replace("Meeting Theme:", "").trim();
+        }
+      });
+
+      // Update the table cells with the extracted data
+      document.getElementById("clubName").innerText = clubName;
+      document.getElementById("clubDetails").innerText = clubAddress;
+      document.getElementById("meetingDetails").innerText = `Meeting #${meetingNumber} Agenda | Time: ${meetingStartTime} to ${meetingEndTime} | Date: ${meetingDate}`;
+      document.getElementById("meetingTheme").innerText = `MEETING THEME: ${meetingTheme}`;
+
+      // Show the table container
+      document.getElementById("tableContainer").style.display = 'block';
+
+      // Enable download buttons
+      document.getElementById("imageDownload").disabled = false;
+      document.getElementById("imageDownload").style.backgroundColor = "#0078d7";
+      document.getElementById("pdfDownload").disabled = false;
+      document.getElementById("pdfDownload").style.backgroundColor = "#0078d7";
+
+      // Extract start time from meetingStartTime
+      let timeMatch = meetingStartTime.match(/\d{1,2}:\d{2}/); // Extracts HH:MM format
+      if (timeMatch) {
+        startTime = timeMatch[0];
+      } else {
+        console.log("No valid start time");
+      }
+
+      // Initialize nominations object
+      let nominations = {
+        "Sergeant at Arms": [],
+        "Presiding Officer": [],
+        "Toastmaster of The Day": [],
+        "General Evaluator": [],
+        "Joke Master": [],
+        "Table Topics Master": [],
+        "Table Topics Evaluator": [],
+        "Timer": [],
+        "Ah Counter": [],
+        "Grammarian": [],
+        "Speaker": [],
+        "Evaluator": []
+      };
+
+      // Parse role players from the editable div
+      lines.forEach(line => {
+        const parts = line.replace(/["\[\]]/g, '').split(":");
+        if (parts.length === 2) {
+          const role = parts[0].trim();
+          if (nominations[role] !== undefined) {
+            const names = parts[1].trim().split(",").map(name => name.trim());
+            nominations[role] = names;
+          } else {
+            console.log(`${role} is not a valid role.`);
+          }
+        }
+      });
+
+      // Generate agenda HTML
+      let agendaHTML = "";
+      for (const [section, tasks] of Object.entries(sectionTaskMapping)) {
+        if (tasks.length > 0) {
+          agendaHTML += `<tr oncontextmenu="showContextMenuSection(event, this)" class="section" data-section="${section}"><td colspan='8' style='font-weight: bold; text-align: center; background: #eda98c;' ondblclick="makeEditable(this)">${section}</td></tr>`;
+          tasks.forEach(row => {
+            if (section === "Break") {
+              agendaHTML += `
+                <tr class="row" data-section="${section}" oncontextmenu="showContextMenuRow(event, this)">
+                  <td ondblclick="makeEditable(this)">${startTime}</td>
+                  <td ondblclick="makeEditable(this)">${addMinutesToTime(startTime, taskTimeMapping[row]["Red Card"])}</td>
+                  <td class="green-card" ondblclick="makeEditable(this)"></td>
+                  <td class="yellow-card" ondblclick="makeEditable(this)"></td>
+                  <td class="red-card" ondblclick="makeEditable(this)">${taskTimeMapping[row]["Red Card"]}</td>
+                  <td colspan='3' ondblclick="makeEditable(this)" class="blue-card">${row}</td>
+                </tr>`;
+              startTime = addMinutesToTime(startTime, taskTimeMapping[row]["Red Card"]);
+              return;
+            }
+
+            if (taskRolePlayerMapping[row] === "Speaker" || taskRolePlayerMapping[row] === "Evaluator") {
+              nominations[taskRolePlayerMapping[row]].forEach((speaker, index) => {
+                agendaHTML += `
+                  <tr class="row" data-section="${section}" oncontextmenu="showContextMenuRow(event, this)">
+                    <td ondblclick="makeEditable(this)">${startTime}</td>
+                    <td ondblclick="makeEditable(this)">${addMinutesToTime(startTime, taskTimeMapping[row]["Red Card"])}</td>
+                    <td class="green-card" ondblclick="makeEditable(this)">${taskTimeMapping[row]["Green Card"]}</td>
+                    <td class="yellow-card" ondblclick="makeEditable(this)">${taskTimeMapping[row]["Yellow Card"]}</td>
+                    <td class="red-card" ondblclick="makeEditable(this)">${taskTimeMapping[row]["Red Card"]}</td>
+                    <td ondblclick="makeEditable(this)">${taskRolePlayerMapping[row]} ${index + 1}</td>
+                    <td ondblclick="makeEditable(this)">${row}</td>
+                    <td ondblclick="makeEditable(this)">${formatName(speaker)}</td>
+                  </tr>`;
+                startTime = addMinutesToTime(startTime, taskTimeMapping[row]["Red Card"]);
+
+                if (taskRolePlayerMapping[row] === "Speaker") {
+                  agendaHTML += `
+                    <tr class="row" data-section="${section}" oncontextmenu="showContextMenuRow(event, this)">
+                      <td ondblclick="makeEditable(this)">${startTime}</td>
+                      <td ondblclick="makeEditable(this)">${addMinutesToTime(startTime, 1)}</td>
+                      <td class="green-card" ondblclick="makeEditable(this)"></td>
+                      <td class="yellow-card" ondblclick="makeEditable(this)"></td>
+                      <td class="red-card" ondblclick="makeEditable(this)">${1}</td>
+                      <td colspan='3' ondblclick="makeEditable(this)" class="blue-card">Audience shares the feedback to the speaker.</td>
+                    </tr>`;
+                  startTime = addMinutesToTime(startTime, 1);
+                }
+              });
+            } else {
+              agendaHTML += `
+                <tr class="row" data-section="${section}" oncontextmenu="showContextMenuRow(event, this)">
+                  <td ondblclick="makeEditable(this)">${startTime}</td>
+                  <td ondblclick="makeEditable(this)">${addMinutesToTime(startTime, taskTimeMapping[row]["Red Card"])}</td>
+                  <td class="green-card" ondblclick="makeEditable(this)">${taskTimeMapping[row]["Green Card"]}</td>
+                  <td class="yellow-card" ondblclick="makeEditable(this)">${taskTimeMapping[row]["Yellow Card"]}</td>
+                  <td class="red-card" ondblclick="makeEditable(this)">${taskTimeMapping[row]["Red Card"]}</td>
+                  <td ondblclick="makeEditable(this)">${taskRolePlayerMapping[row]}</td>
+                  <td ondblclick="makeEditable(this)">${row}</td>
+                  <td ondblclick="makeEditable(this)">${formatName(nominations[taskRolePlayerMapping[row]][0])}</td>
+                </tr>`;
+              startTime = addMinutesToTime(startTime, taskTimeMapping[row]["Red Card"]);
+            }
+          });
+        }
+      }
+
+      // Insert generated agenda into the table
+      document.getElementById("agendaSections").innerHTML = agendaHTML;
+
+      // Show the table container and enable download buttons
+      document.getElementById("tableContainer").style.display = 'block';
+      document.getElementById("imageDownload").disabled = false;
+      document.getElementById("imageDownload").style.backgroundColor = "#0078d7";
+      document.getElementById("pdfDownload").disabled = false;
+      document.getElementById("pdfDownload").style.backgroundColor = "#0078d7";
+    }
+
+    // Function to make a cell editable
+    function makeEditable(cell) {
+      const currentValue = cell.innerText;
+      const input = document.createElement("input");
+      input.value = currentValue;
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          cell.innerText = input.value;
+          updateRowTimes();
+        }
+      });
+      cell.innerHTML = '';
+      cell.appendChild(input);
+      input.focus();
+
+      document.addEventListener('click', (event) => {
+        if (!cell.contains(event.target)) {
+          cell.innerText = input.value;
+          updateRowTimes();
+        }
+      }, { once: true });
+    }
+
+    // Function to format names
+    function formatName(name) {
+      name = name.trim();
+      if (!name.startsWith("TM ")) {
+        return "TM " + name;
+      }
+      return name;
+    }
+
+    // Function to add minutes to a time string
+    function addMinutesToTime(time, minutes) {
+      const [hours, mins] = time.split(':').map(Number);
+      const totalMinutes = hours * 60 + mins + Number(minutes);
+      const newHours = Math.floor(totalMinutes / 60) % 24;
+      const newMinutes = totalMinutes % 60;
+      return `${String(newHours).padStart(2, '0')}:${String(newMinutes).padStart(2, '0')}`;
+    }
+
+    // Function to download the agenda as an HD image
+    function downloadHDImage() {
+      html2canvas(document.getElementById("tableContainer"), { scale: 2, useCORS: true }).then(canvas => {
+        const dataURL = canvas.toDataURL("image/png");
+        const link = document.createElement("a");
+        link.download = "Toastmasters_Agenda_HD.png";
+        link.href = dataURL;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      });
+    }
+
+    // Function to download the agenda as a PDF
+    function downloadPDF() {
+      html2canvas(document.getElementById("tableContainer"), { scale: 2, useCORS: true }).then(canvas => {
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new jspdf.jsPDF("p", "mm", "a4");
+        pdf.addImage(imgData, "PNG", 10, 10, 190, 0);
+        pdf.save("Toastmasters_Agenda.pdf");
+      });
+    }
+
+    // Function to show the context menu for sections
+    function showContextMenuSection(event, element) {
+      event.preventDefault();
+      const contextMenu = document.getElementById("contextMenuSection");
+      selectedRow = element.tagName === 'TR' && !element.firstElementChild.hasAttribute('colspan') ? element : null;
+      selectedSection = element.tagName === 'TR' && element.firstElementChild.hasAttribute('colspan') ? element : null;
+
+      contextMenu.style.display = "block";
+      contextMenu.style.left = `${event.pageX}px`;
+      contextMenu.style.top = `${event.pageY}px`;
+    }
+
+    // Function to show the context menu for rows
+    function showContextMenuRow(event, element) {
+      event.preventDefault();
+      const contextMenu = document.getElementById("contextMenuRow");
+      selectedRow = element.tagName === 'TR' && !element.firstElementChild.hasAttribute('colspan') ? element : null;
+      selectedSection = element.tagName === 'TR' && element.firstElementChild.hasAttribute('colspan') ? element : null;
+
+      contextMenu.style.display = "block";
+      contextMenu.style.left = `${event.pageX}px`;
+      contextMenu.style.top = `${event.pageY}px`;
+    }
+
+    // Function to duplicate a row
+    function duplicateRow() {
+      if (selectedRow) {
+        const newRow = selectedRow.cloneNode(true);
+        if (selectedRow.getAttribute("data-section") === "Prepared Speeches") {
+          const nextRow = selectedRow.nextElementSibling;
+          selectedRow.parentNode.insertBefore(newRow, nextRow ? nextRow.nextSibling : selectedRow.nextSibling);
+          if (nextRow) {
+            const newNextRow = nextRow.cloneNode(true);
+            newRow.parentNode.insertBefore(newNextRow, newRow.nextSibling);
+          }
+        } else {
+          selectedRow.parentNode.insertBefore(newRow, selectedRow.nextSibling);
+        }
+      }
+      updateRowTimes();
+      hideContextMenuRow();
+    }
+
+    // Function to delete a row
+    function deleteRow() {
+      if (selectedRow) {
+        selectedRow.remove();
+      }
+      updateRowTimes();
+      hideContextMenuRow();
+    }
+
+    // Function to duplicate a section
+    function duplicateSection() {
+      if (selectedSection) {
+        let section = selectedSection;
+        let parent = section.parentNode;
+        let originalSectionName = section.getAttribute("data-section");
+
+        // Find how many copies exist already
+        let existingSections = document.querySelectorAll(`.section[data-section^="${originalSectionName}"]`);
+        let newIndex = existingSections.length; // Increment count
+
+        let newSectionName = `${originalSectionName}-${newIndex}`;
+
+        // Clone and insert the section header with updated section name
+        let newSection = section.cloneNode(true);
+        newSection.setAttribute("data-section", newSectionName);
+        newSection.querySelector("td").innerText = newSectionName; // Update text inside section header
+        parent.insertBefore(newSection, section);
+
+        // Get all rows related to this section
+        let rows = Array.from(document.querySelectorAll(`.row[data-section="${originalSectionName}"]`));
+
+        // Insert duplicated rows after the new section, updating their section name
+        let nextRow = newSection.nextSibling;
+        rows.forEach(row => {
+          let clonedRow = row.cloneNode(true);
+          clonedRow.setAttribute("data-section", newSectionName);
+          parent.insertBefore(clonedRow, nextRow);
+        });
+
+        // Clear selection
+        selectedSection = null;
+      }
+      updateRowTimes();
+      hideContextMenuSection();
+    }
+
+    // Function to delete a section
+    function deleteSection() {
+      if (selectedSection) {
+        let parent = selectedSection.parentNode;
+        let sectionName = selectedSection.getAttribute("data-section");
+
+        // Remove the section header
+        selectedSection.remove();
+
+        // Remove all child rows belonging to this section
+        document.querySelectorAll(`.row[data-section="${sectionName}"]`).forEach(row => row.remove());
+
+        // Clear selection
+        selectedSection = null;
+      }
+      updateRowTimes();
+      hideContextMenuSection();
+    }
+
+    // Function to hide the context menu for sections
+    function hideContextMenuSection() {
+      const contextMenu = document.getElementById("contextMenuSection");
+      contextMenu.style.display = "none";
+    }
+
+    // Function to hide the context menu for rows
+    function hideContextMenuRow() {
+      const contextMenu = document.getElementById("contextMenuRow");
+      contextMenu.style.display = "none";
+    }
+
+    // Close context menu when clicking outside
+    document.addEventListener('click', function (event) {
+      const contextMenuSection = document.getElementById("contextMenuSection");
+      if (!contextMenuSection.contains(event.target)) {
+        hideContextMenuSection();
+      }
+      const contextMenuRow = document.getElementById("contextMenuRow");
+      if (!contextMenuRow.contains(event.target)) {
+        hideContextMenuRow();
+      }
+    });
+
+    // Function to update row times
+    function updateRowTimes() {
+      let rows = document.querySelectorAll('#agendaTable .row');
+      let start = startTime;
+
+      rows.forEach(row => {
+        const fromCell = row.children[0]; // "From" column
+        const toCell = row.children[1];   // "To" column
+        const redCard = row.children[4].innerText; // "Red Card" column
+
+        // Update "From" time
+        fromCell.innerText = start;
+
+        // Calculate the "To" time by adding "Red Card" time
+        const newToTime = addMinutesToTime(start, redCard);
+        toCell.innerText = newToTime;
+
+        // Update the "From" time for the next row
+        start = newToTime;
+      });
+    }
+
+    // Function to move a section up
+    function moveSectionUp() {
+      if (selectedSection) {
+        const sectionName = selectedSection.getAttribute("data-section");
+
+        if (selectedSection.previousElementSibling) {
+          const previousSectionName = selectedSection.previousElementSibling.getAttribute("data-section");
+
+          let previousSection = selectedSection.previousElementSibling;
+
+          let count = 0;
+          while (previousSection && previousSection.getAttribute("data-section") === previousSectionName && !previousSection.classList.contains("section")) {
+            count = count + 1;
+            previousSection = previousSection.previousElementSibling;
+          }
+
+          const sectionRows = [selectedSection];
+          let nextRow = selectedSection.nextElementSibling;
+          while (nextRow && nextRow.getAttribute("data-section") === sectionName) {
+            sectionRows.push(nextRow);
+            nextRow = nextRow.nextElementSibling;
+          }
+
+          previousSection.before(...sectionRows);
+        }
+      }
+
+      updateRowTimes();
+      hideContextMenuSection();
+    }
+
+    // Function to move a section down
+    function moveSectionDown() {
+      if (selectedSection) {
+        const sectionName = selectedSection.getAttribute("data-section");
+
+        if (selectedSection.nextElementSibling) {
+          let nextSection = selectedSection.nextElementSibling;
+          let count = 0;
+
+          // Find the next section header while skipping rows of the current section
+          while (nextSection && nextSection.getAttribute("data-section") === sectionName) {
+            nextSection = nextSection.nextElementSibling;
+          }
+
+          if (nextSection) {
+            let targetSection = nextSection;
+            const targetSectionName = nextSection.nextElementSibling.getAttribute("data-section");
+
+            // Ensure we move past all rows of the next section
+            while (targetSection.nextElementSibling && targetSection.nextElementSibling.getAttribute("data-section") === targetSectionName) {
+              targetSection = targetSection.nextElementSibling;
+            }
+
+            // Collect all rows of the selected section
+            const sectionRows = [selectedSection];
+            let nextRow = selectedSection.nextElementSibling;
+            while (nextRow && nextRow.getAttribute("data-section") === sectionName) {
+              sectionRows.push(nextRow);
+              nextRow = nextRow.nextElementSibling;
+            }
+
+            // Move the selected section below the next section
+            targetSection.after(...sectionRows);
+          }
+        }
+      }
+
+      updateRowTimes();
+      hideContextMenuSection();
+    }
+  </script>
+</body>
+</html>
