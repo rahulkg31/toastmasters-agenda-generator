@@ -457,6 +457,7 @@
       });
 
       // Generate agenda HTML
+      let start = startTime;
       let agendaHTML = "";
       for (const [section, tasks] of Object.entries(sectionTaskMapping)) {
         if (tasks.length > 0) {
@@ -465,14 +466,14 @@
             if (section === "Break") {
               agendaHTML += `
                 <tr class="row" data-section="${section}" oncontextmenu="showContextMenuRow(event, this)">
-                  <td ondblclick="makeEditable(this)">${startTime}</td>
-                  <td ondblclick="makeEditable(this)">${addMinutesToTime(startTime, taskTimeMapping[row]["Red Card"])}</td>
+                  <td ondblclick="makeEditable(this)">${start}</td>
+                  <td ondblclick="makeEditable(this)">${addMinutesToTime(start, taskTimeMapping[row]["Red Card"])}</td>
                   <td class="green-card" ondblclick="makeEditable(this)"></td>
                   <td class="yellow-card" ondblclick="makeEditable(this)"></td>
                   <td class="red-card" ondblclick="makeEditable(this)">${taskTimeMapping[row]["Red Card"]}</td>
                   <td colspan='3' ondblclick="makeEditable(this)" class="blue-card">${row}</td>
                 </tr>`;
-              startTime = addMinutesToTime(startTime, taskTimeMapping[row]["Red Card"]);
+              start = addMinutesToTime(start, taskTimeMapping[row]["Red Card"]);
               return;
             }
 
@@ -480,8 +481,8 @@
               nominations[taskRolePlayerMapping[row]].forEach((speaker, index) => {
                 agendaHTML += `
                   <tr class="row" data-section="${section}" oncontextmenu="showContextMenuRow(event, this)">
-                    <td ondblclick="makeEditable(this)">${startTime}</td>
-                    <td ondblclick="makeEditable(this)">${addMinutesToTime(startTime, taskTimeMapping[row]["Red Card"])}</td>
+                    <td ondblclick="makeEditable(this)">${start}</td>
+                    <td ondblclick="makeEditable(this)">${addMinutesToTime(start, taskTimeMapping[row]["Red Card"])}</td>
                     <td class="green-card" ondblclick="makeEditable(this)">${taskTimeMapping[row]["Green Card"]}</td>
                     <td class="yellow-card" ondblclick="makeEditable(this)">${taskTimeMapping[row]["Yellow Card"]}</td>
                     <td class="red-card" ondblclick="makeEditable(this)">${taskTimeMapping[row]["Red Card"]}</td>
@@ -489,26 +490,26 @@
                     <td ondblclick="makeEditable(this)">${row}</td>
                     <td ondblclick="makeEditable(this)">${formatName(speaker)}</td>
                   </tr>`;
-                startTime = addMinutesToTime(startTime, taskTimeMapping[row]["Red Card"]);
+                start = addMinutesToTime(start, taskTimeMapping[row]["Red Card"]);
 
                 if (taskRolePlayerMapping[row] === "Speaker") {
                   agendaHTML += `
                     <tr class="row" data-section="${section}" oncontextmenu="showContextMenuRow(event, this)">
-                      <td ondblclick="makeEditable(this)">${startTime}</td>
-                      <td ondblclick="makeEditable(this)">${addMinutesToTime(startTime, 1)}</td>
+                      <td ondblclick="makeEditable(this)">${start}</td>
+                      <td ondblclick="makeEditable(this)">${addMinutesToTime(start, 1)}</td>
                       <td class="green-card" ondblclick="makeEditable(this)"></td>
                       <td class="yellow-card" ondblclick="makeEditable(this)"></td>
                       <td class="red-card" ondblclick="makeEditable(this)">${1}</td>
                       <td colspan='3' ondblclick="makeEditable(this)" class="blue-card">Audience shares the feedback to the speaker.</td>
                     </tr>`;
-                  startTime = addMinutesToTime(startTime, 1);
+                  start = addMinutesToTime(start, 1);
                 }
               });
             } else {
               agendaHTML += `
                 <tr class="row" data-section="${section}" oncontextmenu="showContextMenuRow(event, this)">
-                  <td ondblclick="makeEditable(this)">${startTime}</td>
-                  <td ondblclick="makeEditable(this)">${addMinutesToTime(startTime, taskTimeMapping[row]["Red Card"])}</td>
+                  <td ondblclick="makeEditable(this)">${start}</td>
+                  <td ondblclick="makeEditable(this)">${addMinutesToTime(start, taskTimeMapping[row]["Red Card"])}</td>
                   <td class="green-card" ondblclick="makeEditable(this)">${taskTimeMapping[row]["Green Card"]}</td>
                   <td class="yellow-card" ondblclick="makeEditable(this)">${taskTimeMapping[row]["Yellow Card"]}</td>
                   <td class="red-card" ondblclick="makeEditable(this)">${taskTimeMapping[row]["Red Card"]}</td>
@@ -516,7 +517,7 @@
                   <td ondblclick="makeEditable(this)">${row}</td>
                   <td ondblclick="makeEditable(this)">${formatName(nominations[taskRolePlayerMapping[row]][0])}</td>
                 </tr>`;
-              startTime = addMinutesToTime(startTime, taskTimeMapping[row]["Red Card"]);
+              start = addMinutesToTime(start, taskTimeMapping[row]["Red Card"]);
             }
           });
         }
