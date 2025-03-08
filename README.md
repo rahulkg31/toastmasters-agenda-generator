@@ -2,6 +2,8 @@
 
 A web-based tool to generate and customize meeting agendas for  Toastmasters clubs. This tool allows you to create, edit, and download  agendas in PDF or high-quality image formats.
 
+Demo - https://rahulkg31.github.io/toastmasters-agenda-generator/
+
 ![Toastmasters Agenda Generator](https://raw.githubusercontent.com/rahulkg31/toastmasters-agenda-generator/main/logo.png)
 
 ## Features
